@@ -4,9 +4,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { login } from "@/services/auth";
 import { saveSession } from "@/services/session";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { t } = useLanguage();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -20,24 +22,22 @@ export default function LoginPage() {
       saveSession(user.id, user.userName);
       router.push("/plans");
     } catch (err) {
-      setError("Correo o contraseña incorrectos");
+      setError(t("login.error"));
       console.log(err);
     }
   }
 
   return (
     <div className="flex-1 flex flex-col items-center justify-center bg-slate-50">
-      <h1 className="text-5xl font-bold text-slate-900 mt-6">Inicia sesión</h1>
-      <p className="text-lg text-slate-600 mt-2">
-        Qué bueno verte de nuevo. Ingresa para ver tus planes.
-      </p>
+      <h1 className="text-5xl font-bold text-slate-900 mt-6">{t("login.title")}</h1>
+      <p className="text-lg text-slate-600 mt-2">{t("login.subtitle")}</p>
 
       <form
         onSubmit={handleSubmit}
         className="bg-white rounded-2xl shadow-lg p-8 mt-10 w-full max-w-md"
       >
-        <label className="block text-sm font-semibold text-slate-700">
-          Correo electrónico
+        <label htmlFor="email" className="block text-sm font-semibold text-slate-700">
+          {t("login.email")}
         </label>
         <input
           id="email"
@@ -46,11 +46,11 @@ export default function LoginPage() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 mt-1 outline-none"
+          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 mt-1 outline-none text-slate-900"
         />
 
-        <label className="block text-sm font-semibold text-slate-700 mt-4">
-          Contraseña
+        <label htmlFor="password" className="block text-sm font-semibold text-slate-700 mt-4">
+          {t("login.password")}
         </label>
         <input
           id="password"
@@ -59,7 +59,7 @@ export default function LoginPage() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 mt-1 outline-none"
+          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 mt-1 outline-none text-slate-900"
         />
 
         {error && <p className="text-sm text-red-600 mt-4">{error}</p>}
@@ -68,7 +68,7 @@ export default function LoginPage() {
           type="submit"
           className="w-full bg-blue-700 text-white font-semibold rounded-xl py-4 mt-8"
         >
-          Iniciar sesión
+          {t("login.submit")}
         </button>
       </form>
     </div>

@@ -5,10 +5,12 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { getSession } from "@/services/session";
 import { getPlan, likePlan, Plan } from "@/services/plans";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 export default function PlanDetailPage() {
   const router = useRouter();
   const { id } = useParams<{ id: string }>();
+  const { t } = useLanguage();
 
   // undefined = cargando, null = no existe
   const [plan, setPlan] = useState<Plan | null | undefined>(undefined);
@@ -40,17 +42,17 @@ export default function PlanDetailPage() {
       await likePlan(id, session.id);
       setLikes(likes + 1);
     } catch (err) {
-      setMessage("No se pudo dar me gusta a este plan");
+      setMessage(t("detail.likeError"));
       console.log(err);
     }
   }
 
   if (plan === undefined) {
-    return <p className="flex-1 bg-slate-50 px-20 py-6 text-slate-500">Cargando plan...</p>;
+    return <p className="flex-1 bg-slate-50 px-20 py-6 text-slate-500">{t("detail.loading")}</p>;
   }
 
   if (plan === null) {
-    return <p className="flex-1 bg-slate-50 px-20 py-6 text-slate-500">Este plan no existe.</p>;
+    return <p className="flex-1 bg-slate-50 px-20 py-6 text-slate-500">{t("detail.notFound")}</p>;
   }
 
   return (
@@ -58,9 +60,8 @@ export default function PlanDetailPage() {
       {/* Barra de arriba */}
       <div className="flex justify-between items-center">
         <Link href="/plans" className="text-slate-700">
-          ← Volver a planes
+          {t("detail.back")}
         </Link>
-        
       </div>
 
       <div className="flex gap-8 mt-4">
@@ -98,7 +99,7 @@ export default function PlanDetailPage() {
                       d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
                     />
                   </svg>
-                  Organizado por
+                  {t("detail.organizedBy")}
                   <span className="font-semibold text-slate-900 ml-1">{plan.creator.name}</span>
                   <span className="text-slate-500 ml-1">@{plan.creator.userName}</span>
                 </p>
@@ -120,19 +121,19 @@ export default function PlanDetailPage() {
                 />
               </svg>
               <span className="font-semibold">{likes}</span>
-              <span className="text-slate-600 text-sm ml-1">likes</span>
+              <span className="text-slate-600 text-sm ml-1">{t("detail.likes")}</span>
             </div>
           </div>
 
           {/* Descripción */}
           <div className="bg-white rounded-2xl p-10 mt-8">
-            <h2 className="text-2xl text-slate-900">Descripción del plan</h2>
+            <h2 className="text-2xl text-slate-900">{t("detail.description")}</h2>
             <p className="text-lg text-slate-600 mt-4">{plan.description}</p>
           </div>
 
           {/* Recomendaciones */}
           <div className="bg-white rounded-2xl p-10 mt-8">
-            <h2 className="text-2xl text-slate-900">Recomendaciones</h2>
+            <h2 className="text-2xl text-slate-900">{t("detail.recommendations")}</h2>
             <p className="text-lg text-slate-600 mt-4">{plan.recomendations}</p>
           </div>
         </div>
@@ -145,39 +146,36 @@ export default function PlanDetailPage() {
               <p className="text-4xl font-bold text-slate-900">
                 ${plan.estimatedPrice.toLocaleString("es-CO")}
               </p>
-              <p className="text-sm text-slate-500">/ persona</p>
+              <p className="text-sm text-slate-500">{t("detail.perPerson")}</p>
             </div>
 
             <div className="border-t border-b border-slate-200 py-4 mt-6">
               <div className="flex justify-between">
-                <p className="text-slate-600">Duración</p>
-                <p className="font-semibold text-slate-900">{plan.estimatedTime} min aprox.</p>
+                <p className="text-slate-600">{t("detail.duration")}</p>
+                <p className="font-semibold text-slate-900">
+                  {plan.estimatedTime} {t("detail.durationUnit")}
+                </p>
               </div>
             </div>
 
             <button
               onClick={handleLike}
-              tabIndex={5}
               className="w-full bg-blue-700 text-white font-semibold rounded-xl py-4 mt-6"
             >
-              Me gustó
+              {t("detail.like")}
             </button>
             {message && <p className="text-sm text-red-600 mt-2">{message}</p>}
             <button className="w-full bg-blue-50 text-slate-900 rounded-xl py-3 mt-3">
-              Preguntar al anfitrión
+              {t("detail.askHost")}
             </button>
 
-            <p className="text-sm text-slate-500 text-center mt-6">
-              Cancelación gratuita hasta 24 horas antes del inicio.
-            </p>
+            <p className="text-sm text-slate-500 text-center mt-6">{t("detail.cancellation")}</p>
           </div>
 
           {/* Experiencia segura */}
           <div className="bg-blue-50 rounded-2xl p-6 mt-8">
-            <p className="font-semibold text-slate-900">🛡️ Experiencia segura y garantizada</p>
-            <p className="text-sm text-slate-600 mt-2">
-              Seguro de accidentes incluido para todos los participantes registrados.
-            </p>
+            <p className="font-semibold text-slate-900">{t("detail.safeExperience")}</p>
+            <p className="text-sm text-slate-600 mt-2">{t("detail.safeExperienceDesc")}</p>
           </div>
         </div>
       </div>

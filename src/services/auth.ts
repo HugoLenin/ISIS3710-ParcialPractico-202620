@@ -1,6 +1,11 @@
 // La URL del back se configura en el archivo .env.local (ver .env.example)
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
+async function parseJsonSafe(response: Response) {
+  const text = await response.text();
+  return text ? JSON.parse(text) : null;
+}
+
 // Envía el correo y la contraseña al back y devuelve los datos del usuario (id, userName...)
 export async function login(email: string, password: string) {
   const response = await fetch(`${API_URL}/users/login`, {
@@ -9,10 +14,10 @@ export async function login(email: string, password: string) {
     body: JSON.stringify({ email, password }),
   });
 
-  const data = await response.json();
+  const data = await parseJsonSafe(response);
 
   if (!response.ok) {
-    throw new Error(data.message || "No se pudo iniciar sesión");
+    throw new Error(data?.message || "No se pudo iniciar sesión");
   }
 
   return data;
@@ -31,10 +36,10 @@ export async function register(
     body: JSON.stringify({ userName: username, email, name, password }),
   });
 
-  const data = await response.json();
+  const data = await parseJsonSafe(response);
 
   if (!response.ok) {
-    throw new Error(data.message || "No se pudo crear la cuenta");
+    throw new Error(data?.message || "No se pudo crear la cuenta");
   }
 
   return data.id;

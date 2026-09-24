@@ -4,9 +4,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { register } from "@/services/auth";
 import { saveSession } from "@/services/session";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 export default function RegisterPage() {
   const router = useRouter();
+  const { t } = useLanguage();
   const [username, setUsername] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -22,26 +24,22 @@ export default function RegisterPage() {
       saveSession(id, username);
       router.push("/plans");
     } catch (err) {
-      setError("No se pudo crear la cuenta, revisa los datos");
+      setError(t("register.error"));
       console.log(err);
     }
   }
 
   return (
     <div className="flex-1 flex flex-col items-center justify-center bg-slate-50">
-
-
-      <h1 className="text-5xl font-bold text-slate-900 mt-6">Crea tu cuenta</h1>
-      <p className="text-lg text-slate-600 mt-2">
-        Regístrate para descubrir y unirte a nuevos planes.
-      </p>
+      <h1 className="text-5xl font-bold text-slate-900 mt-6">{t("register.title")}</h1>
+      <p className="text-lg text-slate-600 mt-2">{t("register.subtitle")}</p>
 
       <form
         onSubmit={handleSubmit}
         className="bg-white rounded-2xl shadow-lg p-8 mt-10 w-full max-w-md"
       >
-        <label className="block text-sm font-semibold text-slate-700">
-          Usuario
+        <label htmlFor="username" className="block text-sm font-semibold text-slate-700">
+          {t("register.username")}
         </label>
         <input
           id="username"
@@ -50,11 +48,11 @@ export default function RegisterPage() {
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           required
-          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 mt-1 outline-none"
+          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 mt-1 outline-none text-slate-900"
         />
 
-        <label className="block text-sm font-semibold text-slate-700 mt-4">
-          Nombre
+        <label htmlFor="name" className="block text-sm font-semibold text-slate-700 mt-4">
+          {t("register.name")}
         </label>
         <input
           id="name"
@@ -63,11 +61,11 @@ export default function RegisterPage() {
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
-          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 mt-1 outline-none"
+          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 mt-1 outline-none text-slate-900"
         />
 
-        <label className="block text-sm font-semibold text-slate-700 mt-4">
-          Correo electrónico
+        <label htmlFor="email" className="block text-sm font-semibold text-slate-700 mt-4">
+          {t("register.email")}
         </label>
         <input
           id="email"
@@ -76,11 +74,11 @@ export default function RegisterPage() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 mt-1 outline-none"
+          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 mt-1 outline-none text-slate-900"
         />
 
-        <label className="block text-sm font-semibold text-slate-700 mt-4">
-          Contraseña
+        <label htmlFor="password" className="block text-sm font-semibold text-slate-700 mt-4">
+          {t("register.password")}
         </label>
         <input
           id="password"
@@ -89,7 +87,7 @@ export default function RegisterPage() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 mt-1 outline-none"
+          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 mt-1 outline-none text-slate-900"
         />
 
         {error && <p className="text-sm text-red-600 mt-4">{error}</p>}
@@ -98,13 +96,11 @@ export default function RegisterPage() {
           type="submit"
           className="w-full bg-blue-700 text-white font-semibold rounded-xl py-4 mt-8"
         >
-          Crear cuenta
+          {t("register.submit")}
         </button>
       </form>
 
-      <p className="text-sm text-slate-600 mt-8">
-        Es gratis y solo toma un minuto
-      </p>
+      <p className="text-sm text-slate-600 mt-8">{t("register.footer")}</p>
     </div>
   );
 }
